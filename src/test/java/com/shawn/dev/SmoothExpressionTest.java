@@ -13,6 +13,5 @@ public class SmoothExpressionTest {
     public void testSayHi() {
         SmoothExpression se = new SmoothExpression();
         se.sayHi();
-        
     }
 }
