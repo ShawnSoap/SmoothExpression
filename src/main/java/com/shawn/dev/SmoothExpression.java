@@ -20,12 +20,17 @@ public class SmoothExpression {
 
     public static class ExpressionBuilder {
         private StringBuilder prefix = new StringBuilder();
-        private StringBuilder content = new StringBuilder();
+        private StringBuilder patternContent = new StringBuilder();
         private StringBuilder suffix = new StringBuilder();
         private int modifiers = Pattern.MULTILINE;
 
         ExpressionBuilder() {
 
+        }
+
+        public ExpressionBuilder add(String content) {
+            patternContent.append("(?:" + content + ")");
+            return this;
         }
 
         public ExpressionBuilder anything() {
@@ -37,18 +42,42 @@ public class SmoothExpression {
         }
 
         public ExpressionBuilder startOfLine() {
+            patternContent.append("^");
             return this;
         }
 
         public ExpressionBuilder endOfLine() {
+            patternContent.append("$");
             return this;
         }
 
-        public ExpressionBuilder digit() {
+        public ExpressionBuilder singleDigit() {
+            return this;
+        }
+
+        public ExpressionBuilder integerNumber() {
+            return this;
+        }
+
+        public ExpressionBuilder floatNumber() {
+            return this;
+        }
+
+        public ExpressionBuilder wordChar() {
+            return this;
+        }
+
+        public ExpressionBuilder nonWordChar() {
             return this;
         }
 
         public ExpressionBuilder then(final String content) {
+            this.add(content);
+            return this;
+        }
+
+        public ExpressionBuilder then(SmoothExpression expression) {
+            this.add(expression.getRegularExression());
             return this;
         }
 
