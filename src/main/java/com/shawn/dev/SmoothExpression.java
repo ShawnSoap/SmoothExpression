@@ -1,5 +1,8 @@
 package com.shawn.dev;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SmoothExpression {
@@ -14,6 +17,15 @@ public class SmoothExpression {
 
     public boolean matches(String target) {
         return pattern.matcher(target).matches();
+    }
+
+    public List<String> getTextGroups(final String toTest, final int group) {
+        List<String> groups = new ArrayList<String>();
+        Matcher m = pattern.matcher(toTest);
+        while (m.find()) {
+            groups.add(m.group(group));
+        }
+        return groups;
     }
 
     private final Pattern pattern;
@@ -68,7 +80,7 @@ public class SmoothExpression {
         }
 
         public ExpressionBuilder floatNumber() {
-            this.add("");
+            this.add("-?([1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*|0?\\.0+|0)");
             return this;
         }
 
@@ -179,9 +191,13 @@ public class SmoothExpression {
     }
 
     public static void main(String[] args) {
-        SmoothExpression exp = SmoothExpression.regex().then("he").anything().anythingBut("o").build();
+        SmoothExpression exp = SmoothExpression.regex().capture().integerNumber().endCapture().then("aa").build();
         System.out.println(exp.getRegularExpression());
-        System.out.println(exp.matches("hello"));
+        System.out.println(exp.matches("11 12 11"));
+        List<String> list = exp.getTextGroups("11aa12aa", 0);
+        for (String s : list) {
+            System.out.println(s);
+        }
     }
 
 }
