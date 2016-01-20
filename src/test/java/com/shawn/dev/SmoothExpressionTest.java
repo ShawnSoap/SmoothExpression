@@ -6,12 +6,7 @@ public class SmoothExpressionTest {
 
     @Test
     public void testInit() {
-        SmoothExpression se = new SmoothExpression();
+        SmoothExpression se = SmoothExpression.regex().build();
     }
 
-    @Test
-    public void testSayHi() {
-        SmoothExpression se = new SmoothExpression();
-        se.sayHi();
-    }
 }
