@@ -8,8 +8,12 @@ public class SmoothExpression {
         this.pattern = pattern;
     }
 
-    public String getRegularExression() {
+    public String getRegularExpression() {
         return this.pattern.pattern();
+    }
+
+    public boolean matches(String target) {
+        return pattern.matcher(target).matches();
     }
 
     private final Pattern pattern;
@@ -28,38 +32,43 @@ public class SmoothExpression {
 
         }
 
-        public ExpressionBuilder add(String content) {
+        private ExpressionBuilder add(String content) {
             patternContent.append("(?:" + content + ")");
             return this;
         }
 
         public ExpressionBuilder anything() {
+            this.add("[\\s\\S]*");
             return this;
         }
 
         public ExpressionBuilder anythingBut(String content) {
+            this.add("[^" +  content + "]*");
             return this;
         }
 
         public ExpressionBuilder startOfLine() {
-            patternContent.append("^");
+            this.add("^");
             return this;
         }
 
         public ExpressionBuilder endOfLine() {
-            patternContent.append("$");
+            this.add("$");
             return this;
         }
 
         public ExpressionBuilder singleDigit() {
+            this.add("\\d");
             return this;
         }
 
         public ExpressionBuilder integerNumber() {
+            this.add("\\d+");
             return this;
         }
 
         public ExpressionBuilder floatNumber() {
+            this.add("");
             return this;
         }
 
@@ -76,16 +85,13 @@ public class SmoothExpression {
             return this;
         }
 
-        public ExpressionBuilder then(SmoothExpression expression) {
-            this.add(expression.getRegularExression());
-            return this;
-        }
-
         public ExpressionBuilder capture() {
+            patternContent.append("(");
             return this;
         }
 
         public ExpressionBuilder endCapture() {
+            patternContent.append(")");
             return this;
         }
 
@@ -162,12 +168,20 @@ public class SmoothExpression {
         }
 
         public SmoothExpression build() {
-            Pattern pattern = Pattern.compile("");
+            Pattern pattern = Pattern.compile(
+                    this.prefix.toString() +
+                    this.patternContent.toString() +
+                    this.suffix.toString(),
+                    modifiers);
             return new SmoothExpression(pattern);
         }
 
     }
 
-
+    public static void main(String[] args) {
+        SmoothExpression exp = SmoothExpression.regex().then("he").anything().anythingBut("o").build();
+        System.out.println(exp.getRegularExpression());
+        System.out.println(exp.matches("hello"));
+    }
 
 }
