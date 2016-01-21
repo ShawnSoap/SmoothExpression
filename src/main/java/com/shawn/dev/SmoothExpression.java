@@ -19,7 +19,7 @@ public class SmoothExpression {
         return pattern.matcher(target).matches();
     }
 
-    public List<String> getTextGroups(final String toTest, final int group) {
+    public List<String> findGroups(final String toTest, final int group) {
         List<String> groups = new ArrayList<String>();
         Matcher m = pattern.matcher(toTest);
         while (m.find()) {
@@ -85,10 +85,12 @@ public class SmoothExpression {
         }
 
         public ExpressionBuilder wordChar() {
+            this.add("[a-zA-Z]");
             return this;
         }
 
         public ExpressionBuilder nonWordChar() {
+            this.add("[^a-zA-z]");
             return this;
         }
 
@@ -108,14 +110,22 @@ public class SmoothExpression {
         }
 
         public ExpressionBuilder oneOrMore() {
+            this.add("+");
             return this;
         }
 
         public ExpressionBuilder zeroOrMore() {
+            this.add("*");
             return this;
         }
 
         public ExpressionBuilder maybe(final String content) {
+            this.add("(?:" + content + ")?");
+            return this;
+        }
+
+        public ExpressionBuilder oneOf(final String... contents) {
+            this.add(String.join("|", contents));
             return this;
         }
 
@@ -194,7 +204,7 @@ public class SmoothExpression {
         SmoothExpression exp = SmoothExpression.regex().capture().integerNumber().endCapture().then("aa").build();
         System.out.println(exp.getRegularExpression());
         System.out.println(exp.matches("11 12 11"));
-        List<String> list = exp.getTextGroups("11aa12aa", 0);
+        List<String> list = exp.findGroups("11aa12aa", 0);
         for (String s : list) {
             System.out.println(s);
         }
