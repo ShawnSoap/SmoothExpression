@@ -129,6 +129,23 @@ public class SmoothExpression {
             return this;
         }
 
+        public ExpressionBuilder multiple(final String content, Integer min, Integer max) {
+            if (min == null && max == null) {
+                this.patternContent.append("(?:" + content + ")+");
+                return this;
+            } else if (min == null && max != null) {
+                this.patternContent.append("(?:" + content + "){1," + max + "}");
+                return this;
+            } else if (min != null && max == null) {
+                this.patternContent.append("(?:" + content + "){" + min + ",}");
+                return this;
+            } else if (min != null && max != null) {
+                this.patternContent.append("(?:" + content + "){" + min + "," + max + "}");
+                return this;
+            }
+            return this;
+        }
+
         public ExpressionBuilder addModifier(final char pModifier) {
             switch (pModifier) {
                 case 'd':
