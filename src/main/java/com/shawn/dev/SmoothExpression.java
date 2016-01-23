@@ -7,7 +7,10 @@ import java.util.regex.Pattern;
 
 /**
  * A utilization class to construct regular expressions
+ * e.g SmoothExpression.regex().startOfLine().anythingBut(" ").endOfLine().build()
+ *
  * @author Qijun
+ * @since v1.0
  */
 public class SmoothExpression {
 
@@ -60,10 +63,22 @@ public class SmoothExpression {
         private StringBuilder suffix = new StringBuilder();
         private int modifiers = Pattern.MULTILINE;
 
+        /**
+         * protected constructor that can only
+         * be called inside the package scope
+         */
         ExpressionBuilder() {
 
         }
 
+        /**
+         * A private quick method to add a piece of pattern that should
+         * not be captured in the group capturing, the added pattern with
+         * be wrapped with (?: )
+         *
+         * @param content the content of the piece of pattern
+         * @return the builder
+         */
         private ExpressionBuilder add(String content) {
             patternContent.append("(?:" + content + ")");
             return this;
@@ -96,6 +111,21 @@ public class SmoothExpression {
 
         public ExpressionBuilder integerNumber() {
             this.add("\\d+");
+            return this;
+        }
+
+        public ExpressionBuilder space() {
+            this.add("\\s");
+            return this;
+        }
+
+        public ExpressionBuilder nonSpace() {
+            this.add("\\S");
+            return this;
+        }
+
+        public ExpressionBuilder anyOf(final String content) {
+            patternContent.append("[" + content + "]");
             return this;
         }
 
@@ -145,7 +175,7 @@ public class SmoothExpression {
         }
 
         public ExpressionBuilder maybe(final String content) {
-            this.add("(?:" + content + ")?");
+            patternContent.append("(?:" + content + ")?");
             return this;
         }
 
@@ -155,10 +185,13 @@ public class SmoothExpression {
         }
 
         /**
-         * @param content
-         * @param min
-         * @param max
-         * @return
+         * Append a pattern of multiple times to the pattern in construction.
+         * Minimum and maximum number of replications can be set to null for no such demands
+         *
+         * @param content the pattern itself
+         * @param min minimum time that the pattern should appear
+         * @param max maximum time that the pattern should appear
+         * @return the builder
          */
         public ExpressionBuilder multiple(final String content, Integer min, Integer max) {
             if (min == null && max == null) {
@@ -177,6 +210,10 @@ public class SmoothExpression {
             return this;
         }
 
+        /**
+         * @param modifier the usual modifier of Java Pattern modifiers to add
+         * @return the builder
+         */
         public ExpressionBuilder addModifier(final char modifier) {
             switch (modifier) {
                 case 'd':
@@ -207,6 +244,10 @@ public class SmoothExpression {
             return this;
         }
 
+        /**
+         * @param modifier the usual modifier of Java Pattern modifiers to remove
+         * @return the builder
+         */
         public ExpressionBuilder removeModifier(final char modifier) {
             switch (modifier) {
                 case 'd':
@@ -237,6 +278,10 @@ public class SmoothExpression {
             return this;
         }
 
+        /**
+         * build the SmoothExpression that can be used for matching and grouping
+         * @return the built SmoothExpression object
+         */
         public SmoothExpression build() {
             Pattern pattern = Pattern.compile(
                     this.prefix.toString() +
@@ -248,6 +293,10 @@ public class SmoothExpression {
 
     }
 
+    /**
+     * main function for test only
+     * @param args no use
+     */
     public static void main(String[] args) {
         SmoothExpression exp = SmoothExpression.regex().capture().integerNumber().endCapture().then("aa").build();
         System.out.println(exp.getRegularExpression());
