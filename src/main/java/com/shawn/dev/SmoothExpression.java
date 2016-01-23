@@ -84,11 +84,43 @@ public class SmoothExpression {
             return this;
         }
 
+        /**
+         * Matches any character, visible or not
+         *
+         * @return the builder
+         */
+        public ExpressionBuilder anyChar() {
+            this.add("[\\s\\S]");
+            return this;
+        }
+
+        /**
+         * Matches any character except specified characters
+         *
+         * @param content the string of characters which shouldn't be matched
+         * @return the builder
+         */
+        public ExpressionBuilder anyCharBut(String content) {
+            this.add("[^" +  content + "]");
+            return this;
+        }
+
+        /**
+         * Matches anything of any length
+         *
+         * @return the builder
+         */
         public ExpressionBuilder anything() {
             this.add("[\\s\\S]*");
             return this;
         }
 
+        /**
+         * Matches anything of any length except specified characters
+         *
+         * @param content the string of characters which shouldn't be matched
+         * @return the builder
+         */
         public ExpressionBuilder anythingBut(String content) {
             this.add("[^" +  content + "]*");
             return this;
