@@ -5,16 +5,28 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A utilization class to construct regular expressions
+ * @author Qijun
+ */
 public class SmoothExpression {
 
     public SmoothExpression(final Pattern pattern) {
         this.pattern = pattern;
     }
 
+    /**
+     * @return the actual regular expression that is built
+     */
     public String getRegularExpression() {
         return this.pattern.pattern();
     }
 
+    /**
+     * check if target matches the specified expression
+     * @param target the target string to check
+     * @return true for match and false for not
+     */
     public boolean matches(String target) {
         return pattern.matcher(target).matches();
     }
@@ -30,10 +42,18 @@ public class SmoothExpression {
 
     private final Pattern pattern;
 
+    /**
+     * start an actual builder to build the expression
+     * e.g Expression.regex().startOfLine().then("hello world").endOfLine().build()
+     * @return a ExpressionBuilder object to build the SmoothExpression itself
+     */
     public static ExpressionBuilder regex() {
         return new ExpressionBuilder();
     }
 
+    /**
+     * An static inner class which is used to build the SmoothExpression
+     */
     public static class ExpressionBuilder {
         private StringBuilder prefix = new StringBuilder();
         private StringBuilder patternContent = new StringBuilder();
@@ -94,6 +114,11 @@ public class SmoothExpression {
             return this;
         }
 
+        public ExpressionBuilder find(final String content) {
+            this.patternContent.append("(" + content + ")");
+            return this;
+        }
+
         public ExpressionBuilder then(final String content) {
             this.add(content);
             return this;
@@ -129,6 +154,12 @@ public class SmoothExpression {
             return this;
         }
 
+        /**
+         * @param content
+         * @param min
+         * @param max
+         * @return
+         */
         public ExpressionBuilder multiple(final String content, Integer min, Integer max) {
             if (min == null && max == null) {
                 this.patternContent.append("(?:" + content + ")+");
@@ -146,8 +177,8 @@ public class SmoothExpression {
             return this;
         }
 
-        public ExpressionBuilder addModifier(final char pModifier) {
-            switch (pModifier) {
+        public ExpressionBuilder addModifier(final char modifier) {
+            switch (modifier) {
                 case 'd':
                     modifiers |= Pattern.UNIX_LINES;
                     break;
@@ -176,8 +207,8 @@ public class SmoothExpression {
             return this;
         }
 
-        public ExpressionBuilder removeModifier(final char pModifier) {
-            switch (pModifier) {
+        public ExpressionBuilder removeModifier(final char modifier) {
+            switch (modifier) {
                 case 'd':
                     modifiers &= ~Pattern.UNIX_LINES;
                     break;
