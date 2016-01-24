@@ -213,16 +213,34 @@ public class SmoothExpression {
             return this;
         }
 
+        /**
+         * Matches any visible character.
+         *
+         * @return the builder
+         */
         public ExpressionBuilder nonSpace() {
             this.add("\\S");
             return this;
         }
 
+        /**
+         * Matches any character of the given String.
+         *
+         * @param content a String that contains all candidate characters
+         * @return the builder
+         */
         public ExpressionBuilder anyOf(final String content) {
             patternContent.append("[" + content + "]");
             return this;
         }
 
+        /**
+         * Matches any float number. e.g. 0.31, -11.5, 3.14...
+         * Will not match a positive number starting with +
+         * Will match negative, positive and zero number with or without .
+         *
+         * @return the builder
+         */
         public ExpressionBuilder floatNumber() {
             this.add("-?([1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*|0?\\.0+|0)");
             return this;
