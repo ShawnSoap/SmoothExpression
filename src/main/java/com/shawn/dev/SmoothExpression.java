@@ -171,16 +171,43 @@ public class SmoothExpression {
             return this;
         }
 
+        /**
+         * Matches a single digit from 0 to 9
+         *
+         * @return the builder
+         */
         public ExpressionBuilder singleDigit() {
             this.add("\\d");
             return this;
         }
 
-        public ExpressionBuilder integerNumber() {
+        /**
+         * Matches an entire non-negative integer number, e.g. 0, 111, 1121..
+         * will not match a negative integer
+         *
+         * @return the builder
+         */
+        public ExpressionBuilder nonNegativeInteger() {
             this.add("\\d+");
             return this;
         }
 
+        /**
+         * Matches an entire negative integer number, e.g. -1., -2321..
+         * will not match a zero or any positive integers
+         *
+         * @return the builder
+         */
+        public ExpressionBuilder negativeInteger() {
+            this.add("-\\d+");
+            return this;
+        }
+
+        /**
+         * Matches an invisible character, e.g \n \t...
+         *
+         * @return the builder
+         */
         public ExpressionBuilder space() {
             this.add("\\s");
             return this;
@@ -367,13 +394,13 @@ public class SmoothExpression {
 
     /**
      * main function for test only
-     * 
+     *
      * @param args no use
      */
     public static void main(String[] args) {
-        SmoothExpression exp = SmoothExpression.regex().capture().integerNumber().endCapture().then("aa").build();
+        SmoothExpression exp = SmoothExpression.regex().nonNegativeInteger().build();
         System.out.println(exp.getRegularExpression());
-        System.out.println(exp.matches("11 12 11"));
+        System.out.println(exp.matches("-111"));
         List<String> list = exp.findGroups("11aa12aa", 0);
         for (String s : list) {
             System.out.println(s);
