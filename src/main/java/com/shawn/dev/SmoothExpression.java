@@ -154,7 +154,7 @@ public class SmoothExpression {
          * @return the builder
          */
         public ExpressionBuilder startOfLine() {
-            this.add("^");
+            this.patternContent.append("^");
             return this;
         }
 
@@ -167,7 +167,7 @@ public class SmoothExpression {
          * @return the builder
          */
         public ExpressionBuilder endOfLine() {
-            this.add("$");
+            this.patternContent.append("$");
             return this;
         }
 
@@ -501,13 +501,17 @@ public class SmoothExpression {
      * @param args no use
      */
     public static void main(String[] args) {
-        SmoothExpression exp = SmoothExpression.regex().nonNegativeInteger().build();
+        SmoothExpression exp = SmoothExpression.regex().startOfLine().nonNegativeInteger().endOfLine().build();
         System.out.println(exp.getRegularExpression());
-        System.out.println(exp.matches("-111"));
+        System.out.println(exp.matches("111"));
         List<String> list = exp.findGroups("11aa12aa", 0);
         for (String s : list) {
             System.out.println(s);
         }
+        SmoothExpression se = SmoothExpression.regex().startOfLine().space().endOfLine().build();
+        System.out.println(se.getRegularExpression());
+        System.out.println(se.matches(" "));
+
     }
 
 }
