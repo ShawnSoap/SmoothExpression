@@ -278,6 +278,8 @@ public class SmoothExpression {
         }
 
         /**
+         * Add modifiers to SmoothExpression.
+         *
          * @param modifier the usual modifier of Java Pattern modifiers to add
          * @return the builder
          */
@@ -312,6 +314,8 @@ public class SmoothExpression {
         }
 
         /**
+         * Remove modifiers from SmoothExpression.
+         *
          * @param modifier the usual modifier of Java Pattern modifiers to remove
          * @return the builder
          */
@@ -347,6 +351,7 @@ public class SmoothExpression {
 
         /**
          * build the SmoothExpression that can be used for matching and grouping
+         *
          * @return the built SmoothExpression object
          */
         public SmoothExpression build() {
@@ -362,6 +367,7 @@ public class SmoothExpression {
 
     /**
      * main function for test only
+     * 
      * @param args no use
      */
     public static void main(String[] args) {
