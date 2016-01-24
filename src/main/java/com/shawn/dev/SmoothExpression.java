@@ -224,6 +224,16 @@ public class SmoothExpression {
         }
 
         /**
+         * Matches a tab.
+         *
+         * @return the builder
+         */
+        public ExpressionBuilder tab() {
+            this.add("\\t");
+            return this;
+        }
+
+        /**
          * Matches any character of the given String.
          *
          * @param content a String that contains all candidate characters
@@ -276,7 +286,7 @@ public class SmoothExpression {
          *
          * {@link #then(String content)} will only match but not capture on the other hand
          *
-         * @param content the pattern to capture
+         * @param content the pattern to match and capture
          * @return the builder
          */
         public ExpressionBuilder find(final String content) {
@@ -285,9 +295,10 @@ public class SmoothExpression {
         }
 
         /**
+         * Append a pattern that will be matched but not captured.
+         * Use {@link #find(String)} if capturing is needed.
          *
-         *
-         * @param content
+         * @param content the pattern to match
          * @return the builder
          */
         public ExpressionBuilder then(final String content) {
@@ -295,31 +306,76 @@ public class SmoothExpression {
             return this;
         }
 
+        /**
+         * Start a capture group.
+         * A capture group must be paired using {@link #endCapture()}.
+         *
+         * @return the builder
+         */
         public ExpressionBuilder capture() {
             patternContent.append("(");
             return this;
         }
 
+        /**
+         * End a capture group.
+         * A capture group has to be started using {@link #capture()}.
+         *
+         * @return the builder
+         */
         public ExpressionBuilder endCapture() {
             patternContent.append(")");
             return this;
         }
 
+        /**
+         * Specify that previous pattern should appear one or more times.
+         * e.g SmoothExpression.regex().startOfLine().then("good").oneOrMore().build()
+         * will match "good", "goodgood", etc.<br>
+         * Attention: It will not work with functional methods like {@link #capture()} and {@link #zeroOrMore()}.
+         *
+         * @return the builder
+         */
         public ExpressionBuilder oneOrMore() {
             this.add("+");
             return this;
         }
 
+        /**
+         * Specify that previous pattern should appear zero or more times.
+         * e.g. SmoothExpression.regex().startOfLine().then("good").oneOrMore().build()
+         * will match "","good", "goodgood", etc.<br>
+         * Attention: It will not work with functional methods like {@link #capture()} and {@link #oneOrMore()}.
+         *
+         * @return the builder
+         */
         public ExpressionBuilder zeroOrMore() {
             this.add("*");
             return this;
         }
 
+        /**
+         * Specify that the pattern may or may not be present in the target.
+         * e.g. SmoothExpression.regex().startOfLine().then("http").maybe("s").then("://").build()
+         * will match both "http://" and "https://"
+         *
+         * @param content the pattern to match
+         * @return the builder
+         */
         public ExpressionBuilder maybe(final String content) {
             patternContent.append("(?:" + content + ")?");
             return this;
         }
 
+        /**
+         * Matches one of the given patterns.
+         * e.g SmoothExpression.regex().startOfLine().oneOf("http://","https://")
+         * will match both "http://" and "https://",
+         * but will not match "ftp://"
+         *
+         * @param contents the group of candidate patters
+         * @return the builder
+         */
         public ExpressionBuilder oneOf(final String... contents) {
             this.add(String.join("|", contents));
             return this;
