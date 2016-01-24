@@ -246,21 +246,50 @@ public class SmoothExpression {
             return this;
         }
 
+        /**
+         * Matches an English letter character.
+         * More specifically, from a to z and from A to Z.
+         * Will only match one character a time.
+         *
+         * @return the builder
+         */
         public ExpressionBuilder wordChar() {
             this.add("[a-zA-Z]");
             return this;
         }
 
+        /**
+         * Matches all characters but English letters.
+         * Will only match one character a time.
+         *
+         * @return the builder
+         */
         public ExpressionBuilder nonWordChar() {
             this.add("[^a-zA-z]");
             return this;
         }
 
+        /**
+         * Append a pattern that should be both matched and captured by SmoothExpression.<br>
+         * e.g SmoothExpression.regex().find("hello").build().findGroups("I said hello", 1)
+         * will return ("hello").<br>
+         *
+         * {@link #then(String content)} will only match but not capture on the other hand
+         *
+         * @param content the pattern to capture
+         * @return the builder
+         */
         public ExpressionBuilder find(final String content) {
             this.patternContent.append("(" + content + ")");
             return this;
         }
 
+        /**
+         *
+         *
+         * @param content
+         * @return the builder
+         */
         public ExpressionBuilder then(final String content) {
             this.add(content);
             return this;
